@@ -44,6 +44,11 @@ const configureIdentityProvider = () => {
             id: profile.sub,
             isAdmin: adminEmails?.includes(profile.email.toLowerCase()) || adminEmails?.includes(profile.preferred_username.toLowerCase())
           }
+
+          if (!newProfile.email) {
+            newProfile = { ...newProfile, email: profile.preferred_username };
+          }
+          
           return newProfile;
         }
       })
