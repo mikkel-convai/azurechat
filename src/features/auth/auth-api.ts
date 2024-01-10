@@ -37,18 +37,13 @@ const configureIdentityProvider = () => {
         clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
         tenantId: process.env.AZURE_AD_TENANT_ID!,
         async profile(profile) {
-          console.log(profile);
+
           const newProfile = {
             ...profile,
             // throws error without this - unsure of the root cause (https://stackoverflow.com/questions/76244244/profile-id-is-missing-in-google-oauth-profile-response-nextauth)
             id: profile.sub,
             isAdmin: adminEmails?.includes(profile.email.toLowerCase()) || adminEmails?.includes(profile.preferred_username.toLowerCase())
           }
-
-          if (!newProfile.email) {
-            newProfile = { ...newProfile, email: profile.preferred_username };
-          }
-          
           return newProfile;
         }
       })
@@ -98,7 +93,6 @@ export const options: NextAuthOptions = {
       if (user?.isAdmin) {
        token.isAdmin = user.isAdmin
       }
-      console.log(token);
       return token
     },
     async session({session, token, user }) {
